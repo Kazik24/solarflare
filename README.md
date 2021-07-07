@@ -1,0 +1,4 @@
+# SolarFlare - Linear optics simulator
+
+
+
