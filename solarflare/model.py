@@ -53,6 +53,10 @@ class Model:
         pass
     pass
 
+    def reset(self):
+        for e in self._tickables:
+            e._reset_elem()
+
     def compile(self,anyNode):
         toScan = [];
         if anyNode is not None: toScan.append(anyNode)
@@ -136,7 +140,8 @@ class Element:
         return math.nan;
     def _set_output(self,name,value):
         self.get_bond(name)._output = float(value);
-    
+    def _reset_elem(self):
+        pass
     def _register(self,model):
         pass
     def _calcOutputs(self,currentTick,currentPhase):

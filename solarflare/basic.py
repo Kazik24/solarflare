@@ -11,7 +11,7 @@ class Source(Element):
     def __init__(self,amplitude,phaseShift=0.0,freqMultipler=1.0,sidef=None):
         Element.__init__(self,"out")
         if amplitude <= 0 or freqMultipler <= 0: raise ValueError();
-        self._waves = [(float(amplitude),float(phaseShift),float(freqMultipler))];
+        self._waves = [[float(amplitude),float(phaseShift),float(freqMultipler)]];
         if sidef is not None:
             side = [];
             for wave in list(sidef):
@@ -20,13 +20,28 @@ class Source(Element):
             self._waves.extend(side)
     @property
     def amplitude(self):
-        return self._amplitude;
+        return self._waves[0][0]
+    @amplitude.setter
+    def amplitude(self, value):
+        value = float(value)
+        if value <= 0:
+            raise ValueError()
+        self._waves[0][0] = value
     @property
     def phase_shift(self):
-        return self._phaseShift;
+        return self._waves[0][1]
+    @phase_shift.setter
+    def phase_shift(self, value):
+        self._waves[0][1] = float(value)
     @property
     def frequency_multipler(self):
-        return self._phaseShift;
+        return self._waves[0][2]
+    @frequency_multipler.setter
+    def frequency_multipler(self, value):
+        value = float(value)
+        if value <= 0:
+            raise ValueError()
+        self._waves[0][2] = value
     @property
     def out(self):
         return self.get_bond("out");
@@ -63,6 +78,8 @@ class Delay(Element):
         if self._backward is not None: self._backward.fill(0);
         self._forwardIdx = 0;
         self._backwardIdx = 0;
+    def _reset_elem(self):
+        self.reset()
     @property
     def power_factor(self):
         return self._ratio;
@@ -108,6 +125,8 @@ class Monitor(Element):
     def clear(self):
         self._xAxis.clear()
         self._yAxis.clear()
+    def _reset_elem(self):
+        self.clear()
     def _calcOutputs(self,currentTick,currentPhase):
         pass
     def _acceptInputs(self,currentTick,currentPhase):
@@ -143,6 +162,8 @@ class Coupler(Element):
         self._forwardIdx2 = 0;
         self._backwardIdx1 = 0;
         self._backwardIdx2 = 0;
+    def _reset_elem(self):
+        self.reset()
     @property
     def out1(self):
         return self.get_bond("out1");
@@ -217,6 +238,8 @@ class Splitter(Element):
         if self._backward is not None: self._backward.fill(0);
         self._forwardIdx = 0;
         self._backwardIdx = 0;
+    def _reset_elem(self):
+        self.reset()
     @property
     def power_factor(self):
         return (self._ratio1+self._ratio2)/2;
